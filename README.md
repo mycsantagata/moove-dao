@@ -15,14 +15,23 @@ This project is built using :
 
 ## Main Features
 
-+ **Acquisto di azioni**: Gli utenti possono acquistare azioni della DAO per partecipare al processo decisionale.
++ **Purchasing votes**: Users can purchase tokens to receive DAO votes to participate in the decision-making process.
 
-+ **Proposta di decisioni**: Gli utenti possono proporre decisioni che devono essere votate dalla comunità.
++ **Proposals**: Users can propose decisions to be voted on by the members.
 
-+ **Voto ponderato**: Il numero di voti di un utente è proporzionale al numero di azioni possedute.
++ **Voting**: Users can vote on proposals within the time limit by deciding whether to approve or reject the proposal.
 
-+ **Approvazione delle decisioni**: Le decisioni che ricevono la maggioranza dei voti vengono approvate e attuate dal contratto.
++ **Approve Proposal**: Proposals that receive more than 70% approval of the total votes by the deadline are approved
 
-+ **Registro delle decisioni**: Il contratto mantiene un registro delle decisioni proposte e delle relative votazioni.
++ **Proposals registry**: The contract keeps a record of proposed decisions and their votes.
+
+## Installation and Configuration
+
+To initialize the project, you need to have NodeJS installed on your computer. After downloading the project, 
+navigate to the project directory in your terminal and run the following command:
+```
+npm install
+```
+This will download all the dependencies.
 
 
