@@ -48,4 +48,20 @@ Now follow the same procedure by copying your private key from Sepolia Account(e
 npx hardhat vars set SEPOLIA_PRIVATE_KEY
 ```
 
+## Hardhat commands
+
+### Compile
+```
+npx hardhat compile
+```
+
+### Test
+```
+npx hardhat test
+```
+
+### Deploy
+```
+npx hardhat ignition deploy ./ignition/modules/MooveDao.ts --network sepolia  
+```
 
