@@ -34,4 +34,18 @@ npm install
 ```
 This will download all the dependencies.
 
+If you want to deploy the smart contract, you must first configure the hardhat variables.
+If you do not already have an account go to https://www.infura.io/ and create one. Click on 'CREATE NEW API KEY', type in a name and then copy the api key at the top.
+Navigate to the project directory in your terminal and run the following command and paste your infura api key:
+
+```
+npx hardhat vars set INFURA_API_KEY
+```
+
+Now follow the same procedure by copying your private key from Sepolia Account(e.g. Metamask), pasting it onto the following command:
+
+```
+npx hardhat vars set SEPOLIA_PRIVATE_KEY
+```
+
 
