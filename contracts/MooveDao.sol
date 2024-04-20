@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./GovernanceToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MooveDao {
+contract MooveDao is Ownable {
 
     enum State { DRAFT, APPROVED, REJECTED }
     enum VoteType { APPROVE, REJECT }
@@ -11,7 +12,6 @@ contract MooveDao {
     GovernanceToken internal token;
     Proposal[] internal proposals;
     bool public saleOpen = true;
-    address internal owner;
 
     struct Proposal {
         address proposer;
@@ -35,11 +35,6 @@ contract MooveDao {
         _;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == owner, "Access denied!");
-        _;
-    }
-
     modifier proposalExist(uint256 _indexProposal){
         require(_indexProposal < proposals.length, "Proposal not found.");
         _;
@@ -50,25 +45,22 @@ contract MooveDao {
         _;
     }
 
-    constructor(){
-        owner = msg.sender;
+    constructor() Ownable(msg.sender){
         token = new GovernanceToken();
     }
 
-    function toggleSale() external onlyAdmin{
+    function toggleSale() external onlyOwner {
         saleOpen = !saleOpen;
     }
 
     function buyShares(uint256 _amount) external payable {
         require(saleOpen, "Sale is closed");
-        require(msg.sender != owner, "Action not permitted for the administrator!");
+        require(msg.sender != Ownable.owner(), "Action not permitted for the administrator!");
         uint256 totalAmount = memberShares[msg.sender] + _amount;
         require(totalAmount <= 10, "The maximum number of votes allowed is 10.");
-        uint256 tokenToTransfer = _amount*1000;
-        require(tokenToTransfer <= token.circulatingSupply(), "Supply limit exceeded.");
-        token.transfer(msg.sender, tokenToTransfer);
+        uint256 tokenToTransfer = _amount * (10 ** uint256(token.decimals()));
+        require(token.transfer(msg.sender, tokenToTransfer), "Token transfer failed");
         memberShares[msg.sender] += _amount;
-
         emit SharesPurchased(msg.sender, _amount);
     }
 
@@ -88,6 +80,7 @@ contract MooveDao {
     function voteProposal(VoteType _typeVote, uint256 _indexProposal) external onlyMember proposalExist(_indexProposal) saleIsClosed {
         require(proposals[_indexProposal].state == State.DRAFT, "Proposal already closed.");
         require(proposalsVoted[_indexProposal][msg.sender] == false ,"You have already voted.");
+        
         if(_typeVote == VoteType.APPROVE){
             proposals[_indexProposal].countApproveVote += memberShares[msg.sender];
         }else{
@@ -98,13 +91,16 @@ contract MooveDao {
         emit Voted(msg.sender, _indexProposal, _typeVote);
     }
 
-    function closeProposal(uint256 _currentDate, uint256 _indexProposal) external onlyAdmin proposalExist(_indexProposal) saleIsClosed {
+    function closeProposal(uint256 _currentDate, uint256 _indexProposal) external onlyOwner proposalExist(_indexProposal) saleIsClosed {
          require(proposals[_indexProposal].state == State.DRAFT, "Proposal already closed.");
          require(_currentDate >= proposals[_indexProposal].endDate, "The proposal has not yet expired.");
 
+         uint256 totalVotes = proposals[_indexProposal].countApproveVote + proposals[_indexProposal].countRejectVote;
+
          //Controllo se il almeno il 70% dei membri ha votato a favore
-         if ((proposals[_indexProposal].countApproveVote * 100 / 
-         (proposals[_indexProposal].countApproveVote + proposals[_indexProposal].countRejectVote)) >= 70) {
+         if(totalVotes == 0){
+            proposals[_indexProposal].state = State.REJECTED;
+         } else if ((proposals[_indexProposal].countApproveVote * 100 / totalVotes) >= 70) {
             proposals[_indexProposal].state = State.APPROVED;
         } else {
             proposals[_indexProposal].state = State.REJECTED;

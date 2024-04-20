@@ -8,4 +8,4 @@ const MooveDaoModule = buildModule("MooveDaoModule", (m) => {
 
 module.exports = MooveDaoModule;
 
-// Sepolia: 0xd72eE2DdD33a0692aA5a3699F460c00d9fC838c1
+// Sepolia: 0x9d26d12947276Ee0ABAA8AB14D4adC45a016D808
