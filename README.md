@@ -4,7 +4,7 @@ MooveDAO is an Ethereum smart contract that implements a proposal-weighted votin
 The contract is developed in Solidity and uses the OpenZeppelin library to implement the Governance Token, which is used to buy votes.
 In this project, Hardhat was used to compile, test and deploy the smart contract.
 
-***Sepolia contract address: 0xd72eE2DdD33a0692aA5a3699F460c00d9fC838c1***
+***Sepolia contract address: 0x9d26d12947276Ee0ABAA8AB14D4adC45a016D808***
 
 ## Technologies
 
